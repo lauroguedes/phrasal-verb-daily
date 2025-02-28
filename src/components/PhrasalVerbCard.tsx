@@ -4,9 +4,13 @@ import { PhrasalVerb } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
-import { Copy } from 'lucide-react';
+import { Copy, Share } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import ShareMenu from '@/components/ShareMenu';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface PhrasalVerbCardProps {
   verb: PhrasalVerb | null;
@@ -39,6 +43,14 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
     });
   };
 
+  const shareFullContent = () => {
+    if (!verb) return;
+    
+    const text = `Phrasal Verb: ${verb.verb} ${verb.particle}\n\nMeaning: ${verb.meaning}\n\nExamples:\n${verb.examples.map(ex => `- ${ex}`).join('\n')}`;
+    
+    copyToClipboard(text, "Full content");
+  };
+
   if (loading) {
     return (
       <div className="w-full max-w-2xl mx-auto rounded-2xl p-6 card-shadow glass-effect">
@@ -67,8 +79,22 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
       transition={{ duration: 0.5 }}
       className="w-full max-w-2xl mx-auto rounded-2xl p-6 card-shadow glass-effect relative"
     >
-      {/* Share Menu Component */}
-      <ShareMenu verb={verb} position="top-right" />
+      <div className="absolute top-4 right-4 z-10">
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button 
+              onClick={shareFullContent}
+              className="p-2 rounded-full hover:bg-secondary/50 transition-colors focus:outline-none"
+              aria-label="Share content"
+            >
+              <Share className="h-5 w-5 text-muted-foreground" />
+            </button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Copy all content</p>
+          </TooltipContent>
+        </Tooltip>
+      </div>
 
       <div className="text-center mb-6">
         <Badge variant="outline" className="mb-3 px-3 py-1 font-normal text-xs">
@@ -79,13 +105,20 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
             <span className="text-primary">{verb.verb}</span>
             <span className="mx-2 text-muted-foreground font-medium">{verb.particle}</span>
           </h2>
-          <button 
-            onClick={() => copyToClipboard(`${verb.verb} ${verb.particle}`, "Phrasal verb")}
-            className="ml-2 p-1.5 rounded-full hover:bg-secondary/50 transition-colors"
-            aria-label="Copy phrasal verb"
-          >
-            <Copy className="h-5 w-5 text-muted-foreground" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button 
+                onClick={() => copyToClipboard(`${verb.verb} ${verb.particle}`, "Phrasal verb")}
+                className="ml-2 p-1.5 rounded-full hover:bg-secondary/50 transition-colors"
+                aria-label="Copy phrasal verb"
+              >
+                <Copy className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Copy phrasal verb</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -102,13 +135,20 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
             <div className="bg-secondary/50 rounded-xl p-5">
               <div className="flex items-center justify-between mb-2">
                 <h3 className="font-medium text-sm uppercase tracking-wider text-muted-foreground">Meaning</h3>
-                <button 
-                  onClick={() => copyToClipboard(verb.meaning, "Meaning")}
-                  className="p-1 rounded-full hover:bg-background/50 transition-colors"
-                  aria-label="Copy meaning"
-                >
-                  <Copy className="h-4 w-4 text-muted-foreground" />
-                </button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button 
+                      onClick={() => copyToClipboard(verb.meaning, "Meaning")}
+                      className="p-1 rounded-full hover:bg-background/50 transition-colors"
+                      aria-label="Copy meaning"
+                    >
+                      <Copy className="h-4 w-4 text-muted-foreground" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Copy meaning</p>
+                  </TooltipContent>
+                </Tooltip>
               </div>
               <p className="text-primary text-lg">{verb.meaning}</p>
             </div>
@@ -120,13 +160,20 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
                   <li key={index} className="text-primary">
                     <div className="flex items-start gap-2">
                       <p className="text-lg flex-1">"{example}"</p>
-                      <button 
-                        onClick={() => copyToClipboard(example, `Example ${index + 1}`)}
-                        className="p-1 rounded-full hover:bg-background/50 transition-colors mt-1 flex-shrink-0"
-                        aria-label={`Copy example ${index + 1}`}
-                      >
-                        <Copy className="h-4 w-4 text-muted-foreground" />
-                      </button>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button 
+                            onClick={() => copyToClipboard(example, `Example ${index + 1}`)}
+                            className="p-1 rounded-full hover:bg-background/50 transition-colors mt-1 flex-shrink-0"
+                            aria-label={`Copy example ${index + 1}`}
+                          >
+                            <Copy className="h-4 w-4 text-muted-foreground" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Copy example</p>
+                        </TooltipContent>
+                      </Tooltip>
                     </div>
                   </li>
                 ))}
