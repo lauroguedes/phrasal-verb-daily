@@ -6,6 +6,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Copy } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ShareMenu from '@/components/ShareMenu';
 
 interface PhrasalVerbCardProps {
   verb: PhrasalVerb | null;
@@ -64,8 +65,11 @@ const PhrasalVerbCard = ({ verb, loading }: PhrasalVerbCardProps) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="w-full max-w-2xl mx-auto rounded-2xl p-6 card-shadow glass-effect"
+      className="w-full max-w-2xl mx-auto rounded-2xl p-6 card-shadow glass-effect relative"
     >
+      {/* Share Menu Component */}
+      <ShareMenu verb={verb} position="top-right" />
+
       <div className="text-center mb-6">
         <Badge variant="outline" className="mb-3 px-3 py-1 font-normal text-xs">
           {verb.level.toUpperCase()}
